@@ -45,10 +45,17 @@
             {% endfor %}
         </div>
         
-        <div class="carousel-nav">
-            <a href="#" onclick="moveHero('prev')"><i class="material-icons">chevron_left</i></a>
-            <a href="#" onclick="moveHero('next')"><i class="material-icons">chevron_right</i></a>
-        </div>
+        <div class="carousel-controls">
+        <button class="nav-btn" onclick="moveHero('prev')">
+            <i class="material-icons">chevron_left</i>
+        </button>
+        
+        <div class="carousel-dots" id="hero-dots"></div>
+        
+        <button class="nav-btn" onclick="moveHero('next')">
+            <i class="material-icons">chevron_right</i>
+        </button>
+    </div>
     </section>
 
     <section id="services" class="section">
