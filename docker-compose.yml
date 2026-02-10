@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    image: sikunaniket/agile_web_service:latest
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgresDb:
+        condition: service_healthy
+    networks: 
+      - app_bridge
+    # 1. Load environment variables from your .env file
+    env_file:
+      - .env
+    # 2. command to migrate and run server automatically
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn agile_web.wsgi:application --bind 0.0.0.0:8000"
+
+  postgresDb:
+    image: postgres:latest
+    # 3. THIS SAVES YOUR DATA
+    volumes:
+      # Persistent Storage (Keeps data safe)
+      - postgres_data:/var/lib/postgresql/data
+      
+      # Auto-Run Insert Script (Only runs if DB is empty/fresh)
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      
+    environment:
+      POSTGRES_DB: agile_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: abcd1234
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d agile_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks: 
+      - app_bridge
+
+# 4. Define the persistent volume here
+volumes:
+  postgres_data:
+
+networks:
+  app_bridge:
+    driver: bridge

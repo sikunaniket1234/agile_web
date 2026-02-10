@@ -1,2 +1,4 @@
-django
+Django==4.2.27
 psycopg2-binary
+whitenoise
+gunicorn
