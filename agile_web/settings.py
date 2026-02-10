@@ -80,7 +80,7 @@ DATABASES = {
         'NAME': 'agile_db',       # Name of your database
         'USER': 'postgres',       # Your Postgres username
         'PASSWORD': 'abcd1234', # Your Postgres password
-        'HOST': 'localhost',
+        'HOST': 'postgresDb',   # host name same as that of postgres container name in docker-compose file
         'PORT': '5432',
     }
 }

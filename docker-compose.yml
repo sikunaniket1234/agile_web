@@ -1,0 +1,35 @@
+services:
+  app:
+    image: sikunaniket/agile_web_service:latest  # picks up image from registry
+    restart: always
+    ports:
+      - 8000:8000
+    depends_on:
+      postgresDb:
+        condition: service_healthy
+    networks: 
+      - app_bridge
+
+  postgresDb:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: agile_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: abcd1234
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d agile_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks: 
+      - app_bridge
+
+volumes:
+  postgres_data:
+
+networks:
+  app_bridge:
+    driver: bridge
