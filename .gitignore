@@ -8,8 +8,11 @@ db.sqlite3
 db.sqlite3-journal
 /media
 /staticfiles
-.env
 
+# Environment files
+.env
+.env.*
+docker-compose.prod.yml
 # Python
 *.egg-info/
 dist/
