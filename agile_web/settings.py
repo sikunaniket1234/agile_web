@@ -17,17 +17,18 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-c4i6%3x=$-f#g8mjhp&!q
 # SECURITY WARNING: don't run with debug turned on in production!
 # This reads the environment variable "DEBUG". If not set, it defaults to True.
 # In Docker, we usually set DEBUG=0 or False.
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = False
 
 # CRITICAL FIX: Must include your domain and localhost for Docker to work
-# ALLOWED_HOSTS = [
-#     'agile-web-services.com', 
-#     'www.agile-web-services.com', 
-#     'localhost', 
-#     '127.0.0.1',
-#     '[::1]' 
-# ]
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost').split(',')
+ALLOWED_HOSTS = [
+    'agile-web-services.com', 
+    'www.agile-web-services.com', 
+    '64.225.22.157',
+    'localhost', 
+    '127.0.0.1',
+    '[::1]' 
+]
+
 
 CSRF_TRUSTED_ORIGINS = [
     "https://agile-web-services.com",
