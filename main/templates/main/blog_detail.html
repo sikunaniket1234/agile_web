@@ -11,35 +11,43 @@
     <meta property="og:title" content="{{ post.title }}">
     <meta property="og:image" content="{{ post.image_url }}">
 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <style>
-        .blog-header { padding: 100px 0 50px; text-align: center; }
-        .blog-content { font-size: 1.2rem; line-height: 1.8; color: var(--text-dim); }
-        .back-btn { margin-bottom: 30px; display: inline-flex; align-items: center; color: var(--accent); }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
 </head>
 <body>
     {% include 'main/navbar.html' %} 
     
-    <div class="container" style="padding-top: 50px;">
-        <a href="{% url 'home' %}" class="back-btn"><i class="material-icons">arrow_back</i> Back to Home</a>
-        
-        <div class="blog-header">
-            <div class="badge-pill">{{ post.category }}</div>
-            <h1 class="outfit-bold">{{ post.title }}</h1>
-            <p class="grey-text">{{ post.date_posted|date:"F d, Y" }}</p>
-        </div>
+    <main class="blog-page-wrap">
+        <div class="container">
+            <div class="blog-nav-row">
+                <a href="{% url 'home' %}" class="blog-back-link"><i class="material-icons">arrow_back</i> Back to Home</a>
+            </div>
+            
+            <div class="blog-hero-card">
+                <div class="badge-pill">{{ post.category }}</div>
+                <h1 class="outfit-bold">{{ post.title }}</h1>
+                <p class="blog-meta-line">{{ post.date_posted|date:"F d, Y" }}</p>
+            </div>
 
-        <img src="{{ post.image_url }}" style="width: 100%; border-radius: 20px; margin-bottom: 40px; object-fit: cover;">
+            <div class="blog-cover-wrap">
+                <img src="{{ post.image_url }}" alt="{{ post.title }}" class="blog-cover-img">
+            </div>
 
-        <div class="row">
-            <div class="col s12 m10 offset-m1 blog-content">
-                {{ post.content|linebreaks }}
+            <div class="row">
+                <div class="col s12 m10 offset-m1">
+                    <article class="blog-article-card">
+                        <div class="blog-content">
+                            {{ post.content|linebreaks }}
+                        </div>
+                    </article>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
+    {% include 'main/footer.html' %}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="{% static 'js/script.js' %}"> </script>

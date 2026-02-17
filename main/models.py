@@ -108,14 +108,56 @@ class Project(models.Model):
 # ... (Keep all your existing models: Service, Client, Project, etc.) ...
 
 class HeroSlide(models.Model):
+    GRAPHIC_CHOICES = [
+        ('CUBE', '3D Cyber Cube'),
+        ('RING', 'Pulsing Tech Ring'),
+        ('GLOBE', ' glowing Globe Icon'),
+        ('IMAGE', 'Standard Image (Use Image URL)'),
+        ('NONE', 'No Graphic (Text Only)'),
+    ]
+
     badge_text = models.CharField(max_length=50, default="Innovative Digital Solutions")
     heading_line_1 = models.CharField(max_length=50, default="Scale Your Vision")
     heading_gradient_text = models.CharField(max_length=50, default="Globally.")
     subtext = models.TextField(default="From custom software to viral marketing strategies...")
+    
+    # NEW FIELDS FOR GRAPHICS
+    graphic_type = models.CharField(max_length=10, choices=GRAPHIC_CHOICES, default='CUBE')
+    image_url = models.CharField(max_length=255, blank=True, null=True, help_text="Only used if 'Standard Image' is selected")
+    
     active = models.BooleanField(default=True)
-    order = models.IntegerField(default=0, help_text="Order of appearance (1, 2, 3...)")
+    order = models.IntegerField(default=0)
 
     def __str__(self): return f"Slide: {self.heading_line_1}"
 
     class Meta:
         ordering = ['order']
+
+
+class FooterSettings(models.Model):
+    company_name = models.CharField(max_length=120, default="Agile Web")
+    tagline = models.CharField(max_length=220, default="Building digital ecosystems that scale.")
+    copyright_text = models.CharField(max_length=220, blank=True, help_text="Optional custom copyright line")
+
+    def __str__(self):
+        return f"Footer Settings - {self.company_name}"
+
+
+class SocialLink(models.Model):
+    PLATFORM_CHOICES = [
+        ('X', 'X (Twitter)'),
+        ('INSTAGRAM', 'Instagram'),
+        ('FACEBOOK', 'Facebook'),
+    ]
+
+    platform = models.CharField(max_length=20, choices=PLATFORM_CHOICES)
+    url = models.URLField()
+    active = models.BooleanField(default=True)
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['order', 'id']
+        unique_together = ('platform', 'url')
+
+    def __str__(self):
+        return f"{self.platform} - {self.url}"

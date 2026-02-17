@@ -1,11 +1,16 @@
 <div class="navbar-fixed">
     <nav class="glass-nav">
         <div class="nav-wrapper container">
-            <a href="/" class="brand-logo outfit-bold">AGILE<span class="text-gradient">WEB</span></a>
             
-            <a href="#" data-target="mobile-menu" class="sidenav-trigger accent-text"><i class="material-icons">menu</i></a>
+            <a href="#" data-target="mobile-menu" class="sidenav-trigger accent-text">
+                <i class="material-icons">menu</i>
+            </a>
 
-            <ul class="right hide-on-med-and-down">
+            <a href="/" class="brand-logo outfit-bold">
+                AGILE<span class="text-gradient">WEB</span>
+            </a>
+
+            <ul id="desktop-menu" class="desktop-links">
                 <li><a href="/#services">Services</a></li>
                 <li><a href="/#projects">Projects</a></li>
                 <li><a href="/#pricing">Pricing</a></li>
@@ -18,7 +23,11 @@
 </div>
 
 <ul class="sidenav glass-sidenav" id="mobile-menu">
-    <li><h4 class="outfit-bold center-align" style="margin-top: 20px;">AGILE<span class="text-gradient">WEB</span></h4></li>
+    <li>
+        <h4 class="outfit-bold center-align" style="margin-top: 20px; color: var(--text);">
+            AGILE<span class="text-gradient">WEB</span>
+        </h4>
+    </li>
     <li><div class="divider"></div></li>
     <li><a href="/#services"><i class="material-icons">settings</i>Services</a></li>
     <li><a href="/#projects"><i class="material-icons">code</i>Projects</a></li>

@@ -10,27 +10,65 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
 </head>
 <body>
 
     {% include 'main/navbar.html' %}
 
     <section id="home" class="hero-carousel-wrap">
+        
+        <canvas id="neural-canvas"></canvas>
+
         <div class="carousel carousel-slider center" id="hero-carousel">
             {% for slide in hero_slides %}
             <div class="carousel-item" href="#{{ forloop.counter }}">
                 <div class="hero-modern">
-                    <div class="glow-sphere"></div>
-                    <div class="container center-align">
-                        <div class="badge-pill" data-aos="fade-down">{{ slide.badge_text }}</div>
-                        <h1 class="outfit-bold" data-aos="fade-up">
-                            {{ slide.heading_line_1 }} <br>
-                            <span class="text-gradient">{{ slide.heading_gradient_text }}</span>
-                        </h1>
-                        <p class="hero-subtext">{{ slide.subtext }}</p>
+                    <div class="container">
+                        <div class="hero-split-row">
+                            
+                            <div class="hero-text-col">
+                                <div class="badge-pill" data-aos="fade-down">{{ slide.badge_text }}</div>
+                                <h1 class="outfit-bold" data-aos="fade-up">
+                                    {{ slide.heading_line_1 }} <br>
+                                    <span class="text-gradient">{{ slide.heading_gradient_text }}</span>
+                                </h1>
+                                <p class="hero-subtext">{{ slide.subtext }}</p>
+                                <br>
+                                <a href="#contact" class="btn-premium hover-lift">Get Started</a>
+                            </div>
+
+                            <div class="hero-graphic-col">
+                                
+                                {% if slide.graphic_type == 'CUBE' %}
+                                    <div class="cyber-cube">
+                                        <div class="cube-face front"></div>
+                                        <div class="cube-face back"></div>
+                                        <div class="cube-face right"></div>
+                                        <div class="cube-face left"></div>
+                                        <div class="cube-face top"></div>
+                                        <div class="cube-face bottom"></div>
+                                    </div>
+                                
+                                {% elif slide.graphic_type == 'RING' %}
+                                    <div class="tech-ring"></div>
+                                    <div class="tech-core"></div>
+
+                                {% elif slide.graphic_type == 'GLOBE' %}
+                                    <i class="material-icons" style="font-size: 12rem; color: var(--accent); opacity: 0.8; text-shadow: 0 0 30px rgba(var(--accent-rgb), 0.45); animation: float 3s infinite ease-in-out;">public</i>
+
+                                {% elif slide.graphic_type == 'IMAGE' and slide.image_url %}
+                                    <img src="{{ slide.image_url }}" alt="Hero Image" style="max-height: 350px; border-radius: 20px; box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.3);">
+                                
+                                {% endif %}
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -46,16 +84,14 @@
         </div>
         
         <div class="carousel-controls">
-        <button class="nav-btn" onclick="moveHero('prev')">
-            <i class="material-icons">chevron_left</i>
-        </button>
-        
-        <div class="carousel-dots" id="hero-dots"></div>
-        
-        <button class="nav-btn" onclick="moveHero('next')">
-            <i class="material-icons">chevron_right</i>
-        </button>
-    </div>
+            <button class="nav-btn" onclick="moveHero('prev')">
+                <i class="material-icons">chevron_left</i>
+            </button>
+            <div class="carousel-dots" id="hero-dots"></div>
+            <button class="nav-btn" onclick="moveHero('next')">
+                <i class="material-icons">chevron_right</i>
+            </button>
+        </div>
     </section>
 
     <section id="services" class="section">
@@ -67,7 +103,12 @@
                     <a href="{% url 'service_detail' service.slug %}">
                         <div class="card glass-card hover-lift">
                             <div class="card-content">
-                                <i class="material-icons medium accent-text">{{ service.icon_name }}</i>
+                                {% if service.icon_url %}
+                                    <img src="{{ service.icon_url }}" alt="{{ service.title }}" style="height: 64px; margin-bottom: 15px;">
+                                {% else %}
+                                    <i class="material-icons medium" style="color: var(--accent);">{{ service.icon_name }}</i>
+                                {% endif %}
+                                
                                 <h5 class="outfit-bold">{{ service.title }}</h5>
                                 <p class="grey-text">{{ service.short_description|truncatewords:12 }}</p>
                                 <div style="margin-top: 15px; font-weight: 600; color: var(--accent);">
@@ -146,7 +187,7 @@
         </div>
     </section>
 
-    <section id="pricing" class="section">
+    {% comment %} <section id="pricing" class="section">
         <div class="container">
             <h2 class="center-align outfit-bold">Transparent Pricing</h2>
             <div class="row">
@@ -176,12 +217,48 @@
                 {% endfor %}
             </div>
         </div>
-    </section>
+    </section> {% endcomment %}
+    <section id="pricing" class="section">
+    <div class="container">
+        <h2 class="center-align outfit-bold">Transparent Pricing</h2>
+        
+        <div class="row flex-row">
+            {% for plan in pricing_plans %}
+            <div class="col s12 m4" data-aos="fade-up">
+                <div class="card glass-card pricing-card {% if plan.is_popular %}featured-border{% endif %}">
+                    {% if plan.is_popular %}
+                    <div class="badge-pill">Most Popular</div>
+                    {% endif %}
+                    
+                    <div class="card-content">
+                        <h5 class="outfit-bold">{{ plan.name }}</h5>
+                        <div class="price-tag {% if plan.is_popular %}text-gradient{% endif %}">
+                            <span class="currency">$</span>{{ plan.price }}<span class="period">{{ plan.period }}</span>
+                        </div>
+                        <hr class="glass-divider">
+                        
+                        <ul class="check-list">
+                            {% for feature in plan.get_features_list %}
+                            <li><i class="material-icons">check_circle</i> {{ feature }}</li>
+                            {% endfor %}
+                        </ul>
+                        
+                        <a href="#contact" class="btn-outline">Select Plan</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="center-align">No pricing plans listed.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
 
     <section id="marketing" class="section secondary-bg">
         <div class="container">
             <h2 class="center-align outfit-bold">Dominant Marketing</h2>
-            <div class="row">
+            
+            <div class="row flex-row">
                 {% for feature in marketing_features %}
                 <div class="col s12 m4" data-aos="zoom-in">
                     <div class="card marketing-card-new">
@@ -285,8 +362,122 @@
         </div>
     </section>
 
+    {% include 'main/footer.html' %}
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script src="{% static 'js/script.js' %}"> </script>
+
+    <script>
+        const canvas = document.getElementById('neural-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        // Configuration
+        const particleCount = 60; // Number of dots
+        const connectionDistance = 150; // Max distance to draw line
+        const mouseDistance = 200; // Mouse interaction range
+
+        // Resize Canvas
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Mouse Tracking
+        let mouse = { x: null, y: null };
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+        });
+        window.addEventListener('mouseout', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        // Particle Class
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 1; 
+                this.vy = (Math.random() - 0.5) * 1; 
+                this.size = Math.random() * 2 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce off edges
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+
+                // Mouse Interaction (Haptic-like feedback)
+                if (mouse.x != null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx*dx + dy*dy);
+                    if (distance < mouseDistance) {
+                        const forceDirectionX = dx / distance;
+                        const forceDirectionY = dy / distance;
+                        const force = (mouseDistance - distance) / mouseDistance;
+                        // Gently push away or pull towards (current: pull)
+                        this.vx += forceDirectionX * force * 0.05;
+                        this.vy += forceDirectionY * force * 0.05;
+                    }
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+                ctx.fill();
+            }
+        }
+
+        // Initialize
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        // Animation Loop
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            // Draw Connections First
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a; b < particles.length; b++) {
+                    let dx = particles[a].x - particles[b].x;
+                    let dy = particles[a].y - particles[b].y;
+                    let distance = Math.sqrt(dx*dx + dy*dy);
+
+                    if (distance < connectionDistance) {
+                        let opacity = 1 - (distance / connectionDistance);
+                        const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent-rgb').trim() || '56, 189, 248';
+                        ctx.strokeStyle = `rgba(${accent}, ${opacity * 0.5})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Update and Draw Particles
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
 </body>
 </html>

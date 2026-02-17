@@ -3,7 +3,14 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.http import HttpResponse
-from .models import Service, PricingPlan, ContactLead, MarketingFeature, TechTool, BlogPost, Client, Project,HeroSlide
+from .models import Service, PricingPlan, ContactLead, MarketingFeature, TechTool, BlogPost, Client, Project, HeroSlide, FooterSettings, SocialLink
+
+
+def get_footer_context():
+    return {
+        'footer_settings': FooterSettings.objects.first(),
+        'social_links': SocialLink.objects.filter(active=True),
+    }
 def home(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -45,16 +52,21 @@ def home(request):
         'ongoing_projects': Project.objects.filter(project_type='ONGOING'),
         'hero_slides': HeroSlide.objects.filter(active=True),
     }
+    context.update(get_footer_context())
     return render(request, 'main/index.html', context)
 
 def blog_detail(request, slug):
     # Fetch specific blog by slug
     post = get_object_or_404(BlogPost, slug=slug)
-    return render(request, 'main/blog_detail.html', {'post': post})
+    context = {'post': post}
+    context.update(get_footer_context())
+    return render(request, 'main/blog_detail.html', context)
 def service_detail(request, slug):
     service = get_object_or_404(Service, slug=slug)
     # The sub_services are fetched automatically via the 'related_name' we defined in models
-    return render(request, 'main/service_detail.html', {'service': service})
+    context = {'service': service}
+    context.update(get_footer_context())
+    return render(request, 'main/service_detail.html', context)
 
 def robots_txt(request):
     text = [

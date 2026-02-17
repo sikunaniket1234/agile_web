@@ -8,20 +8,73 @@
     <title>{{ service.meta_title|default:service.title }} | Agile Web</title>
     <meta name="description" content="{{ service.meta_description|default:service.short_description }}">
 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    
     <style>
-        .service-header { padding: 80px 0 40px; }
-        .sub-service-card { 
-            background: rgba(255,255,255,0.03); 
-            border: 1px solid var(--border); 
-            border-radius: 12px;
-            padding: 20px;
-            transition: 0.3s;
-            height: 100%;
+        /* --- Desktop Styles --- */
+        .service-header { 
+            padding: 80px 0 40px; 
         }
-        .sub-service-card:hover { background: rgba(255,255,255,0.05); border-color: var(--accent); }
+        .service-header .hero-subtext {
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Flex container makes sure all cards in a row match height */
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .sub-service-card { 
+            /* THEME FIX: Uses variable so it turns White in Light Mode */
+            background: var(--surface); 
+            border: 1px solid var(--border); 
+            border-radius: 16px;
+            padding: 30px;
+            transition: 0.3s;
+            height: 100%; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .sub-service-card:hover { 
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px var(--elevation-shadow);
+        }
+
+        /* --- Mobile Styles (Responsiveness Fix) --- */
+        @media only screen and (max-width: 992px) {
+            .service-header { 
+                padding: 40px 0 20px; 
+            }
+            .service-header h1 {
+                font-size: 2.5rem !important;
+                line-height: 1.2;
+            }
+            .service-header .hero-subtext {
+                font-size: 1.1rem !important;
+                padding: 0 10px;
+            }
+            /* Stack cards on mobile */
+            .flex-row { display: block; }
+            .sub-service-card {
+                margin-bottom: 20px; 
+                padding: 20px;
+            }
+            .btn-outline {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -35,34 +88,46 @@
         </div>
 
         <div class="service-header center-align">
-            <i class="material-icons large accent-text" style="font-size: 5rem;">{{ service.icon_name }}</i>
+            {% if service.icon_url %}
+                <img src="{{ service.icon_url }}" alt="{{ service.title }}" style="height: 100px; margin-bottom: 20px;">
+            {% else %}
+                <i class="material-icons large" style="color: var(--accent); font-size: 5rem;">{{ service.icon_name }}</i>
+            {% endif %}
+            
             <h1 class="outfit-bold">{{ service.title }}</h1>
             <p class="hero-subtext">{{ service.long_description }}</p>
         </div>
 
+        <h3 class="outfit-bold text-gradient center-on-small-only">What We Offer</h3>
         
-
-        <h3 class="outfit-bold text-gradient">What We Offer</h3>
-        <div class="row" style="margin-top: 30px;">
+        <div class="row flex-row" style="margin-top: 30px;">
             {% for sub in service.sub_services.all %}
             <div class="col s12 m6">
                 <div class="sub-service-card">
                     <div style="display: flex; align-items: center; margin-bottom: 15px;">
-                        <i class="material-icons accent-text" style="margin-right: 15px;">{{ sub.icon_name }}</i>
-                        <h5 class="outfit-bold" style="margin:0; font-size: 1.5rem;">{{ sub.title }}</h5>
+                        {% if sub.icon_url %}
+                            <img src="{{ sub.icon_url }}" alt="{{ sub.title }}" style="height: 35px; margin-right: 15px;">
+                        {% else %}
+                            <i class="material-icons medium" style="color: var(--accent); font-size: 2.5rem; margin-right: 15px;">{{ sub.icon_name }}</i>
+                        {% endif %}
+                        
+                        <h5 class="outfit-bold" style="margin:0; font-size: 1.4rem;">{{ sub.title }}</h5>
                     </div>
                     <p class="text-dim">{{ sub.description }}</p>
                 </div>
             </div>
             {% empty %}
-            <p>No sub-services listed yet.</p>
+            <p class="center-align text-dim">No specific features listed yet.</p>
             {% endfor %}
         </div>
 
         <div class="center-align" style="margin: 60px 0;">
+            <h4 class="outfit-bold">Ready to start?</h4>
+            <br>
             <a href="{% url 'home' %}#contact" class="btn-premium">Get a Quote for {{ service.title }}</a>
         </div>
     </div>
+    {% include 'main/footer.html' %}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="{% static 'js/script.js' %}"> </script>

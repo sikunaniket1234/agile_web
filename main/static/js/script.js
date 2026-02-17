@@ -1,17 +1,22 @@
 document.addEventListener('DOMContentLoaded', function () {
     // 1. Init Animations
-    AOS.init({ duration: 800, easing: 'ease-out', once: true });
+    if (typeof AOS !== 'undefined') {
+        AOS.init({ duration: 800, easing: 'ease-out', once: true });
+    }
 
     // 2. Init Materialize Components (Sidenav, Select, etc)
-    var elems = document.querySelectorAll('.sidenav');
-    var instances = M.Sidenav.init(elems);
-    
-    var selectElems = document.querySelectorAll('select');
-    M.FormSelect.init(selectElems);
+    if (typeof M !== 'undefined') {
+        var elems = document.querySelectorAll('.sidenav');
+        M.Sidenav.init(elems);
+        
+        var selectElems = document.querySelectorAll('select');
+        M.FormSelect.init(selectElems);
+    }
 
     // 3. Theme Logic
     const html = document.documentElement;
-    const savedTheme = localStorage.getItem('site-theme') || 'dark';
+    // Backward compatible: prefer site-theme, fall back to old 'theme' key.
+    const savedTheme = localStorage.getItem('site-theme') || localStorage.getItem('theme') || 'dark';
     html.setAttribute('data-theme', savedTheme);
     updateIcons(savedTheme);
 
@@ -21,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
         html.setAttribute('data-theme', newTheme);
         localStorage.setItem('site-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
         updateIcons(newTheme);
     }
 
@@ -42,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const heroCarouselEl = document.getElementById('hero-carousel');
     const dotsContainer = document.getElementById('hero-dots');
 
-    if (heroCarouselEl && dotsContainer) {
+    if (heroCarouselEl && dotsContainer && typeof M !== 'undefined') {
         // 1. Generate Dots based on Slide Count
         const slides = heroCarouselEl.querySelectorAll('.carousel-item');
         dotsContainer.innerHTML = ''; // Clear existing
@@ -103,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 // Close sidenav if open
-                const sidenav = M.Sidenav.getInstance(document.querySelector('.sidenav'));
+                const sidenav = (typeof M !== 'undefined') ? M.Sidenav.getInstance(document.querySelector('.sidenav')) : null;
                 if(sidenav && sidenav.isOpen) sidenav.close();
 
                 if (target) {

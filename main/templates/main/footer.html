@@ -1,0 +1,35 @@
+<footer class="custom-site-footer">
+    <div class="container">
+        <div class="footer-top">
+            <div class="footer-brand-block">
+                <h5 class="outfit-bold">{{ footer_settings.company_name|default:"Agile Web" }}</h5>
+                <p class="text-dim">{{ footer_settings.tagline|default:"Building digital ecosystems that scale." }}</p>
+            </div>
+            <div class="social-palette" aria-label="Social media links">
+                {% for link in social_links %}
+                    <a class="social-chip social-{{ link.platform|lower }}" href="{{ link.url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ link.platform }}">
+                        {% if link.platform == 'X' %}
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.901 2h3.68l-8.04 9.19L24 22h-7.406l-5.8-6.757L4.885 22H1.2l8.599-9.83L0 2h7.594l5.243 6.174L18.901 2Zm-1.292 17.765h2.04L6.486 4.118H4.299L17.609 19.765Z"/></svg>
+                        {% elif link.platform == 'INSTAGRAM' %}
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75 2h8.5A5.76 5.76 0 0 1 22 7.75v8.5A5.76 5.76 0 0 1 16.25 22h-8.5A5.76 5.76 0 0 1 2 16.25v-8.5A5.76 5.76 0 0 1 7.75 2Zm8.5 1.8h-8.5A3.96 3.96 0 0 0 3.8 7.75v8.5a3.96 3.96 0 0 0 3.95 3.95h8.5a3.96 3.96 0 0 0 3.95-3.95v-8.5a3.96 3.96 0 0 0-3.95-3.95ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Zm5.3-2.2a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4Z"/></svg>
+                        {% elif link.platform == 'FACEBOOK' %}
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 22v-8h2.7l.5-3h-3.2V9.2c0-.9.3-1.5 1.6-1.5h1.7V5a21.2 21.2 0 0 0-2.4-.1c-2.4 0-4.1 1.5-4.1 4.3V11H8v3h2.8v8h2.7Z"/></svg>
+                        {% endif %}
+                        <span>{{ link.platform }}</span>
+                    </a>
+                {% empty %}
+                    <span class="text-dim">Add social links from admin.</span>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="text-dim">
+                {% if footer_settings and footer_settings.copyright_text %}
+                    {{ footer_settings.copyright_text }}
+                {% else %}
+                    &copy; {% now "Y" %} {{ footer_settings.company_name|default:"Agile Web" }}. All rights reserved.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</footer>

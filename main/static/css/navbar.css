@@ -1,0 +1,139 @@
+/* =========================================
+   NAVBAR STYLES (Flexbox Architecture)
+   ========================================= */
+
+/* --- 1. Positioning --- */
+.navbar-fixed {
+    position: fixed;
+    top: 0; width: 100%;
+    z-index: 9999 !important;
+    height: 64px;
+}
+
+.glass-nav {
+    background: var(--surface) !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-bottom: 1px solid var(--border);
+    height: 64px;
+    line-height: 64px;
+    box-shadow: 0 4px 30px var(--elevation-shadow);
+}
+
+/* --- 2. Flex Container (The Fix) --- */
+.nav-wrapper {
+    display: flex;
+    justify-content: space-between; /* Pushes Logo left, Menu right */
+    align-items: center;
+    height: 100%;
+    position: relative;
+}
+
+/* --- 3. Elements --- */
+.brand-logo {
+    font-size: 1.8rem !important;
+    color: var(--text) !important;
+    white-space: nowrap;
+    position: relative !important; /* Overrides Materialize absolute */
+    transform: none !important;
+    left: auto !important;
+}
+
+/* Desktop Menu Links */
+.desktop-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 0;
+}
+
+.desktop-links li a {
+    color: var(--nav-text) !important;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: 0.3s;
+}
+
+.desktop-links li a:hover {
+    color: var(--accent) !important;
+    background-color: transparent !important;
+}
+
+/* Mobile Trigger (Hidden by default on Desktop) */
+.sidenav-trigger {
+    display: none; /* We turn this on in Media Queries */
+    color: var(--accent) !important;
+    cursor: pointer;
+    margin: 0;
+}
+
+/* CTA Button */
+.nav-cta {
+    background: var(--gradient);
+    color: var(--button-text) !important;
+    border-radius: 50px;
+    height: 40px !important; line-height: 40px !important;
+    padding: 0 25px !important;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 15px var(--accent-shadow-soft);
+}
+.nav-cta:hover { transform: translateY(-2px); }
+
+/* Theme Toggle */
+#theme-toggle i { height: 64px; line-height: 64px; display: flex; align-items: center; }
+
+/* Mobile Sidenav */
+.glass-sidenav {
+    background-color: var(--bg-alt) !important;
+    backdrop-filter: blur(10px);
+    border-right: 1px solid var(--border);
+    width: 280px !important;
+    z-index: 10000;
+}
+.glass-sidenav li a { color: var(--text) !important; font-weight: 500; display: flex; align-items: center; }
+.glass-sidenav li > a > i { color: var(--accent) !important; margin-right: 20px; }
+.glass-sidenav .divider { background-color: var(--border) !important; }
+
+/* =========================================
+   RESPONSIVE LOGIC (Mobile/Tablet)
+   ========================================= */
+@media only screen and (max-width: 992px) {
+    
+    /* 1. Hide Desktop Menu */
+    .desktop-links { display: none !important; }
+
+    /* 2. Helper for absolute positioning context */
+    .nav-wrapper {
+        display: flex;
+        justify-content: center; /* Centers the Logo */
+        align-items: center;
+        position: relative; /* Critical for absolute children */
+    }
+
+    /* 3. Center the Logo */
+    .brand-logo {
+        position: relative !important; /* Let flexbox center it */
+        left: auto !important;
+        transform: none !important;
+        margin: 0;
+        z-index: 1;
+    }
+
+    /* 4. Pin Hamburger to the LEFT */
+    .sidenav-trigger { 
+        display: flex !important; 
+        align-items: center; 
+        height: 100%;
+        position: absolute !important; /* Force it out of flex flow */
+        left: 0 !important; /* Stick to left edge */
+        top: 0;
+        padding: 0 20px; /* Clickable area */
+        z-index: 20; /* Above logo */
+        cursor: pointer;
+    }
+    
+    .sidenav-trigger i { 
+        font-size: 2rem; 
+        color: var(--accent);
+    }
+}
