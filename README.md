@@ -19,7 +19,7 @@ A modern, full-stack digital agency website built with **Django (Python)** and *
 
 1.  **Clone the repo:**
     ```bash
-    git clone [https://github.com/sikunaniket1234/agile_web.git](https://github.com/sikunaniket1234/agile_web.git)
+    git clone
     cd agile_web
     ```
 
