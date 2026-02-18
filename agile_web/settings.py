@@ -51,10 +51,11 @@ INSTALLED_APPS = [
     
     # Your Apps
     'main',
-
+    'import_export',
     # CRITICAL FIX: Required for Sitemap & SEO features we added
     'django.contrib.sites',
     'django.contrib.sitemaps',
+
 ]
 
 # Required for 'django.contrib.sites'
@@ -157,3 +158,7 @@ else:
 
 DEFAULT_FROM_EMAIL = 'noreply@agile-web-services.com'
 ADMIN_EMAIL = 'admin@agile-web-services.com'
+
+
+# Add this setting to allow Import/Export in the admin
+IMPORT_EXPORT_USE_TRANSACTIONS = True
