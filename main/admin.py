@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 from import_export.admin import ImportExportModelAdmin
 from .models import (
     Service, SubService, PricingPlan, ContactLead, 
@@ -68,9 +69,18 @@ class TechToolAdmin(ImportExportModelAdmin):
 @admin.register(BlogPost)
 class BlogPostAdmin(ImportExportModelAdmin):
     resource_class = BlogPostResource
-    list_display = ('title', 'category', 'date_posted')
+    list_display = ('title', 'author_name', 'category', 'views_count', 'image_preview_list', 'date_posted')
     prepopulated_fields = {'slug': ('title',)}
     list_filter = ('category',)
+    readonly_fields = ('image_preview_large',)
+
+    def image_preview_list(self, obj):
+        return format_html('<img src="{}" style="width: 50px; height: 30px; object-fit: cover; border-radius: 4px;" />', obj.get_image_url)
+    image_preview_list.short_description = 'Thumbnail'
+
+    def image_preview_large(self, obj):
+        return format_html('<img src="{}" style="max-width: 300px; border-radius: 8px; border: 1px solid #ccc;" />', obj.get_image_url)
+    image_preview_large.short_description = 'Current Image Preview'
 
 # 10. Client Admin
 @admin.register(Client)

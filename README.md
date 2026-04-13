@@ -1,52 +1,54 @@
-# Agile Web - Digital Agency Platform 🚀
+# Agile Web Agency Platform
 
-A modern, full-stack digital agency website built with **Django (Python)** and **PostgreSQL**. It features a fully dynamic Content Management System (CMS) for managing services, blogs, pricing, and leads.
+A high-performance, premium Django-based agency website featuring glassmorphism design, a powerful blog engine, and technical service showcases.
 
-## 🌟 Key Features
-* **Dynamic CMS:** Manage Services, Sub-Services, Pricing, and Hero Slides from the Admin Panel.
-* **SEO Optimized:** Dynamic meta tags and sitemap generation for high search ranking.
-* **Lead Capture:** Functional contact forms with email notifications.
-* **Modern UI:** Glassmorphism design using Materialize CSS and AOS animations.
-* **Blog Engine:** Full markdown-ready blog system.
+## 🚀 Recent Major Updates
+- **Stable Environment:** Migrated from Python 3.14 (experimental) to **Python 3.12 (Stable)**.
+- **Blog Engine 2.0:**
+  - Added dedicated `/blog/` list and detail pages.
+  - Full **Markdown support** for articles (Headers, Bold, Links, Lists).
+  - Internal **View Counter** and Author Attribution.
+  - **Image Upload System:** Support for both external URL images and local file uploads with Admin previews.
+- **Design Overhaul:**
+  - Unified CSS Grid architecture (removed legacy float grids).
+  - Recalibrated **Light Mode** (Soft Slate palette) for professional readability.
+  - Optimized Hero Carousel and Pricing table UX.
 
-## 🛠️ Tech Stack
-* **Backend:** Django 4.x, Python 3.9+
-* **Database:** PostgreSQL
-* **Frontend:** HTML5, CSS3, Materialize CSS, JavaScript
-* **Deployment:** Docker / Gunicorn / Nginx ready
+## 🛠️ Setup Instructions (v3.12)
+1. **Clone the repository:**
+   ```bash
+   git clone [your-repo-url]
+   ```
+2. **Create a Virtual Environment (Python 3.12 required):**
+   ```bash
+   py -3.12 -m venv venv_312
+   source venv_312/Scripts/activate
+   ```
+3. **Install Dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. **Environment Variables:**
+   Ensure your `.env` file is configured with:
+   - `DEBUG=True`
+   - `SECRET_KEY=...`
+   - `EMAIL_HOST_USER=...` (Optional for contact form)
 
-## 🚀 Quick Start
+5. **Run Migrations:**
+   ```bash
+   python manage.py migrate
+   ```
 
-1.  **Clone the repo:**
-    ```bash
-    git clone
-    cd agile_web
-    ```
+6. **Start Server:**
+   ```bash
+   python manage.py runserver
+   ```
 
-2.  **Create Virtual Environment:**
-    ```bash
-    python -m venv venv
-    # Windows
-    venv\Scripts\activate
-    # Mac/Linux
-    source venv/bin/activate
-    ```
+## 📂 Project Structure
+- `main/`: Core application logic, models, and views.
+- `main/templates/`: Optimized Django templates with custom components.
+- `main/static/`: Premium CSS and Vanilla JS interactions.
+- `media/`: Local storage for user-uploaded blog imagery (Git ignored).
 
-3.  **Install Dependencies:**
-    ```bash
-    pip install django psycopg2-binary
-    ```
-
-4.  **Database Migration:**
-    *(Ensure Postgres is running and you have created a DB named 'agile_db')*
-    ```bash
-    python manage.py migrate
-    ```
-
-5.  **Run Server:**
-    ```bash
-    python manage.py runserver
-    ```
-
-## 📄 License
-This project is licensed under the MIT License.
+## 🛑 Production Note
+The `db.sqlite3` and `.env` are excluded from version control to prevent data corruption and security leaks. For production deployment, ensure `DEBUG=False` and set up a PostgreSQL database.

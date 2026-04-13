@@ -2,8 +2,8 @@
 Django settings for agile_web project.
 """
 
+import os
 from pathlib import Path
-import os  # <--- CRITICAL FIX: Needed for database settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -97,12 +97,12 @@ WSGI_APPLICATION = 'agile_web.wsgi.application'
 # Uses environment variables from docker-compose.yml
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME', 'agile_db'),
-        'USER': os.environ.get('DB_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'abcd1234'),
-        'HOST': os.environ.get('DB_HOST', 'localhost'), # 'db' in docker, 'localhost' locally
-        'PORT': os.environ.get('DB_PORT', '5432'),
+        'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.sqlite3'),
+        'NAME': os.environ.get('DB_NAME', BASE_DIR / 'db.sqlite3'),
+        'USER': os.environ.get('DB_USER', ''),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', ''),
+        'PORT': os.environ.get('DB_PORT', ''),
     }
 }
 
@@ -131,6 +131,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Optional: Enable WhiteNoise compression and caching
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Media Files (User Uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # --- DEFAULT AUTO FIELD ---

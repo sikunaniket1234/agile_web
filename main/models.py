@@ -21,7 +21,16 @@ class Service(models.Model):
     meta_description = models.TextField(max_length=160, blank=True, help_text="Description under the link on Google (Max 160 chars)")
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            original_slug = slugify(self.title)
+            queryset = Service.objects.all()
+            if self.pk:
+                queryset = queryset.exclude(pk=self.pk)
+            slug = original_slug
+            counter = 1
+            while queryset.filter(slug=slug).exists():
+                slug = f"{original_slug}-{counter}"
+                counter += 1
+            self.slug = slug
         super().save(*args, **kwargs)
 
     def __str__(self): return self.title
@@ -69,19 +78,46 @@ class BlogPost(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, blank=True, help_text="URL friendly name (auto-generated)")
     category = models.CharField(max_length=50) # e.g. Technology
-    image_url = models.CharField(max_length=255) # Cover image
+    image_url = models.CharField(max_length=255, blank=True, null=True) # Cover image
+    image_file = models.ImageField(upload_to='blog_images/', blank=True, null=True)
     excerpt = models.TextField(help_text="Short summary for home page")
+
+    @property
+    def get_image_url(self):
+        if self.image_file:
+            return self.image_file.url
+        return self.image_url if self.image_url else "https://via.placeholder.com/800x480"
     content = models.TextField(help_text="Full article content")
     date_posted = models.DateTimeField(auto_now_add=True)
+    author_name = models.CharField(max_length=100, default="Agile Team")
+    views_count = models.PositiveIntegerField(default=0)
     meta_title = models.CharField(max_length=70, blank=True)
     meta_description = models.TextField(max_length=160, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            original_slug = slugify(self.title)
+            queryset = BlogPost.objects.all()
+            if self.pk:
+                queryset = queryset.exclude(pk=self.pk)
+            slug = original_slug
+            counter = 1
+            while queryset.filter(slug=slug).exists():
+                slug = f"{original_slug}-{counter}"
+                counter += 1
+            self.slug = slug
         super().save(*args, **kwargs)
 
     def __str__(self): return self.title
+
+class Comment(models.Model):
+    post = models.ForeignKey(BlogPost, on_delete=models.CASCADE, related_name='comments')
+    name = models.CharField(max_length=50)
+    body = models.TextField()
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Comment by {self.name} on {self.post.title}"
 
 class Client(models.Model):
     name = models.CharField(max_length=100)

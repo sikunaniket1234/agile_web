@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>{{ service.meta_title|default:service.title }} | Agile Web</title>
+    <title>{{ service.title }} | Agile Web Services</title>
     <meta name="description" content="{{ service.meta_description|default:service.short_description }}">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
@@ -15,118 +15,142 @@
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
     
     <style>
-        /* --- Desktop Styles --- */
-        .service-header { 
-            padding: 80px 0 40px; 
-        }
-        .service-header .hero-subtext {
-            text-align: center;
-            margin-left: auto;
-            margin-right: auto;
-        }
+        .service-detail-wrap { padding: 120px 0 80px; position: relative; overflow: hidden; }
         
-        /* Flex container makes sure all cards in a row match height */
-        .flex-row {
-            display: flex;
-            flex-wrap: wrap;
+        /* Subtle Glow Backgrounds */
+        .page-glow-fixed {
+            position: fixed; width: 600px; height: 600px;
+            background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
+            z-index: -1; pointer-events: none; opacity: 0.4;
         }
 
-        .sub-service-card { 
-            /* THEME FIX: Uses variable so it turns White in Light Mode */
-            background: var(--surface); 
-            border: 1px solid var(--border); 
-            border-radius: 16px;
-            padding: 30px;
-            transition: 0.3s;
-            height: 100%; 
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        .service-hero {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+            align-items: center; margin-bottom: 100px;
         }
         
-        .sub-service-card:hover { 
-            transform: translateY(-5px);
-            border-color: var(--accent);
-            box-shadow: 0 10px 30px var(--elevation-shadow);
+        .service-hero-text h1 { font-size: 4rem; margin-bottom: 20px; line-height: 1.1; }
+        .service-hero-text p { font-size: 1.25rem; line-height: 1.7; color: var(--text-dim); margin-bottom: 40px; }
+        
+        .service-hero-graphic {
+            display: flex; justify-content: center; align-items: center;
+            background: var(--surface); border: 1px solid var(--border);
+            height: 400px; border-radius: 40px; position: relative;
+            backdrop-filter: blur(20px);
+        }
+        
+        .main-service-icon { font-size: 12rem !important; color: var(--accent); opacity: 0.9; }
+        .main-service-img { height: 180px; width: auto; object-fit: contain; }
+
+        .sub-service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px; margin-top: 50px;
         }
 
-        /* --- Mobile Styles (Responsiveness Fix) --- */
+        .offer-card {
+            background: var(--surface) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 24px !important;
+            padding: 40px !important;
+            transition: 0.4s ease;
+            position: relative;
+        }
+        .offer-card:hover { 
+            transform: translateY(-8px); 
+            border-color: var(--accent) !important;
+            box-shadow: 0 20px 50px var(--elevation-shadow);
+        }
+        .offer-card i { margin-bottom: 20px; color: var(--accent); }
+        .offer-card h5 { margin-bottom: 15px; }
+
+        .cta-box {
+            background: var(--gradient); border-radius: 30px;
+            padding: 80px 40px; text-align: center; margin-top: 100px;
+            box-shadow: 0 30px 60px var(--accent-shadow-soft);
+        }
+        .cta-box h3 { color: #fff; margin-bottom: 20px; }
+        .cta-box p { color: rgba(255,255,255,0.8); font-size: 1.2rem; margin-bottom: 40px; }
+        .btn-white {
+            background: #fff; color: var(--bg); padding: 18px 50px;
+            border-radius: 12px; font-weight: 800; transition: 0.3s;
+        }
+        .btn-white:hover { transform: scale(1.05); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+
         @media only screen and (max-width: 992px) {
-            .service-header { 
-                padding: 40px 0 20px; 
-            }
-            .service-header h1 {
-                font-size: 2.5rem !important;
-                line-height: 1.2;
-            }
-            .service-header .hero-subtext {
-                font-size: 1.1rem !important;
-                padding: 0 10px;
-            }
-            /* Stack cards on mobile */
-            .flex-row { display: block; }
-            .sub-service-card {
-                margin-bottom: 20px; 
-                padding: 20px;
-            }
-            .btn-outline {
-                width: 100%;
-                text-align: center;
-                margin-bottom: 10px;
-            }
+            .service-hero { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+            .service-hero-text h1 { font-size: 3rem; }
+            .service-hero-graphic { height: 300px; }
+            .main-service-icon { font-size: 8rem !important; }
+            .sub-service-grid { grid-template-columns: 1fr; }
         }
     </style>
+    <script>
+        (function() {
+            var theme = localStorage.getItem('site-theme') || localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 </head>
 <body>
+    <div class="page-glow-fixed" style="top: -100px; right: -100px;"></div>
+    <div class="page-glow-fixed" style="bottom: -100px; left: -100px; background: radial-gradient(circle, var(--accent-soft-strong) 0%, transparent 70%);"></div>
+
     {% include 'main/navbar.html' %}
 
-    <div class="container">
-        <div style="padding-top: 40px;">
-            <a href="{% url 'home' %}#services" class="btn-outline" style="margin-left:0; padding: 10px 20px; font-size: 0.9rem;">
-                <i class="material-icons left">arrow_back</i> Back to Services
-            </a>
-        </div>
-
-        <div class="service-header center-align">
-            {% if service.icon_url %}
-                <img src="{{ service.icon_url }}" alt="{{ service.title }}" style="height: 100px; margin-bottom: 20px;">
-            {% else %}
-                <i class="material-icons large" style="color: var(--accent); font-size: 5rem;">{{ service.icon_name }}</i>
-            {% endif %}
-            
-            <h1 class="outfit-bold">{{ service.title }}</h1>
-            <p class="hero-subtext">{{ service.long_description }}</p>
-        </div>
-
-        <h3 class="outfit-bold text-gradient center-on-small-only">What We Offer</h3>
-        
-        <div class="row flex-row" style="margin-top: 30px;">
-            {% for sub in service.sub_services.all %}
-            <div class="col s12 m6">
-                <div class="sub-service-card">
-                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
-                        {% if sub.icon_url %}
-                            <img src="{{ sub.icon_url }}" alt="{{ sub.title }}" style="height: 35px; margin-right: 15px;">
-                        {% else %}
-                            <i class="material-icons medium" style="color: var(--accent); font-size: 2.5rem; margin-right: 15px;">{{ sub.icon_name }}</i>
-                        {% endif %}
-                        
-                        <h5 class="outfit-bold" style="margin:0; font-size: 1.4rem;">{{ sub.title }}</h5>
-                    </div>
-                    <p class="text-dim">{{ sub.description }}</p>
-                </div>
+    <main class="service-detail-wrap">
+        <div class="container">
+            <div style="margin-bottom: 40px;">
+                <a href="{% url 'home' %}#services" class="text-dim" style="display: flex; align-items: center; gap: 8px; font-weight: 600;">
+                    <i class="material-icons">west</i> Back to Ecosystem
+                </a>
             </div>
-            {% empty %}
-            <p class="center-align text-dim">No specific features listed yet.</p>
-            {% endfor %}
-        </div>
 
-        <div class="center-align" style="margin: 60px 0;">
-            <h4 class="outfit-bold">Ready to start?</h4>
-            <br>
-            <a href="{% url 'home' %}#contact" class="btn-premium">Get a Quote for {{ service.title }}</a>
+            <section class="service-hero">
+                <div class="service-hero-text">
+                    <div class="badge-pill">Service Spotlight</div>
+                    <h1 class="outfit-bold text-gradient">{{ service.title }}</h1>
+                    <p>{{ service.long_description }}</p>
+                    <a href="#contact-row" class="btn-premium">Inquire About This Service</a>
+                </div>
+                <div class="service-hero-graphic">
+                    {% if service.icon_url %}
+                        <img src="{{ service.icon_url }}" alt="{{ service.title }}" class="main-service-img">
+                    {% else %}
+                        <i class="material-icons main-service-icon">{{ service.icon_name }}</i>
+                    {% endif %}
+                </div>
+            </section>
+
+            <section id="offerings">
+                <h3 class="outfit-bold center-align" style="margin-bottom: 60px;">What We Deliver</h3>
+                <div class="sub-service-grid">
+                    {% for sub in service.sub_services.all %}
+                    <div class="card offer-card">
+                        <div class="card-content">
+                            {% if sub.icon_url %}
+                                <img src="{{ sub.icon_url }}" alt="{{ sub.title }}" style="height: 48px; margin-bottom: 20px; display: block;">
+                            {% else %}
+                                <i class="material-icons medium">{{ sub.icon_name }}</i>
+                            {% endif %}
+                            <h5 class="outfit-bold">{{ sub.title }}</h5>
+                            <p class="text-dim">{{ sub.description }}</p>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="center-align text-dim">Specialized features coming soon.</p>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <section id="contact-row" class="cta-box">
+                <h3 class="outfit-bold">Supercharge your {{ service.title }}</h3>
+                <p>Let's collaborate to build a scalable, high-performance solution tailored to your custom requirements.</p>
+                <a href="{% url 'home' %}#contact" class="btn-white">Book a Discovery Call</a>
+            </section>
         </div>
-    </div>
+    </main>
+
     {% include 'main/footer.html' %}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>

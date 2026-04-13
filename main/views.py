@@ -3,7 +3,8 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.http import HttpResponse
-from .models import Service, PricingPlan, ContactLead, MarketingFeature, TechTool, BlogPost, Client, Project, HeroSlide, FooterSettings, SocialLink
+from django.db.models import Q
+from .models import Service, PricingPlan, ContactLead, MarketingFeature, TechTool, BlogPost, Client, Project, HeroSlide, FooterSettings, SocialLink, Comment
 
 
 def get_footer_context():
@@ -40,12 +41,19 @@ def home(request):
         return redirect('home')
 
     # Fetch all dynamic data
+    # Blog Search Logic
+    search_query = request.GET.get('q', '')
+    blogs = BlogPost.objects.all().order_by('-date_posted')
+    if search_query:
+        blogs = blogs.filter(Q(title__icontains=search_query) | Q(content__icontains=search_query))
+
     context = {
         'services': Service.objects.filter(active=True),
         'pricing_plans': PricingPlan.objects.all(),
         'marketing_features': MarketingFeature.objects.all(),
         'tech_stack': TechTool.objects.all(),
-        'blogs': BlogPost.objects.all().order_by('-date_posted')[:3],# Latest 3 only
+        'blogs': blogs,
+        'search_query': search_query,
         # --- NEW DATA ---
         'clients': Client.objects.all(),
         'in_house_projects': Project.objects.filter(project_type='IN_HOUSE'),
@@ -56,9 +64,28 @@ def home(request):
     return render(request, 'main/index.html', context)
 
 def blog_detail(request, slug):
-    # Fetch specific blog by slug
     post = get_object_or_404(BlogPost, slug=slug)
-    context = {'post': post}
+    
+    # Increment View Counter
+    post.views_count += 1
+    post.save()
+    
+    # Handle Comment Form
+    if request.method == 'POST' and 'comment_form' in request.POST:
+        name = request.POST.get('name')
+        body = request.POST.get('body')
+        if name and body:
+            Comment.objects.create(post=post, name=name, body=body)
+            messages.success(request, 'Your comment was posted successfully!')
+            return redirect('blog_detail', slug=post.slug)
+
+    # Fetch Related Posts
+    related_posts = BlogPost.objects.filter(category=post.category).exclude(id=post.id).order_by('-date_posted')[:3]
+
+    context = {
+        'post': post,
+        'related_posts': related_posts,
+    }
     context.update(get_footer_context())
     return render(request, 'main/blog_detail.html', context)
 def service_detail(request, slug):
@@ -67,6 +94,19 @@ def service_detail(request, slug):
     context = {'service': service}
     context.update(get_footer_context())
     return render(request, 'main/service_detail.html', context)
+
+def blog_list(request):
+    search_query = request.GET.get('q', '')
+    blogs = BlogPost.objects.all().order_by('-date_posted')
+    if search_query:
+        blogs = blogs.filter(Q(title__icontains=search_query) | Q(content__icontains=search_query) | Q(category__icontains=search_query))
+
+    context = {
+        'blogs': blogs,
+        'search_query': search_query,
+    }
+    context.update(get_footer_context())
+    return render(request, 'main/blog_list.html', context)
 
 def robots_txt(request):
     text = [

@@ -26,27 +26,27 @@
 }
 
 [data-theme="light"] {
-    --bg: #ffffff;
-    --bg-alt: #f0f9ff;
-    --surface: rgba(255, 255, 255, 0.9);
+    --bg: #f8fafc;
+    --bg-alt: #f1f5f9;
+    --surface: rgba(255, 255, 255, 0.95);
     --text: #0f172a;
     --text-dim: #475569;
-    --accent: #0284c7;
-    --gradient: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
-    --border: rgba(0, 0, 0, 0.08);
+    --accent: #0ea5e9;
+    --gradient: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+    --border: rgba(15, 23, 42, 0.12);
     --nav-text: #0f172a;
-    --accent-rgb: 2, 132, 199;
+    --accent-rgb: 14, 165, 233;
     --button-text: #ffffff;
-    --elevation-shadow: rgba(15, 23, 42, 0.1);
-    --accent-soft: rgba(var(--accent-rgb), 0.1);
-    --accent-soft-strong: rgba(var(--accent-rgb), 0.12);
-    --control-bg: rgba(255, 255, 255, 0.82);
-    --chip-bg: rgba(255, 255, 255, 0.9);
-    --footer-grad-start: rgba(2, 132, 199, 0.08);
-    --code-bg: rgba(15, 23, 42, 0.08);
-    --pre-bg: rgba(15, 23, 42, 0.05);
-    --accent-shadow-soft: rgba(var(--accent-rgb), 0.24);
-    --accent-shadow-strong: rgba(var(--accent-rgb), 0.35);
+    --elevation-shadow: rgba(15, 23, 42, 0.08);
+    --accent-soft: rgba(var(--accent-rgb), 0.08);
+    --accent-soft-strong: rgba(var(--accent-rgb), 0.15);
+    --control-bg: #ffffff;
+    --chip-bg: #ffffff;
+    --footer-grad-start: rgba(14, 165, 233, 0.05);
+    --code-bg: #f1f5f9;
+    --pre-bg: #e2e8f0;
+    --accent-shadow-soft: rgba(var(--accent-rgb), 0.2);
+    --accent-shadow-strong: rgba(var(--accent-rgb), 0.4);
 }
 
 body {
@@ -66,6 +66,11 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; font-weight: 800; color:
 .text-dim { color: var(--text-dim) !important; }
 .accent-text { color: var(--accent); letter-spacing: 1px; font-weight: 600; text-transform: uppercase; }
 .blue-text { color: var(--accent) !important; }
+
+/* Truncation Utilities */
+.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.truncate-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
 
 /* =========================================
    2. NAVBAR STYLES
@@ -117,9 +122,11 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; font-weight: 800; color:
 
 /* Badge & Buttons */
 .badge-pill {
-    display: inline-block; padding: 8px 16px; border-radius: 50px;
+    display: inline-flex; padding: 6px 14px; border-radius: 50px;
     background: var(--accent-soft); border: 1px solid var(--accent);
     color: var(--accent); font-weight: 600; margin-bottom: 20px;
+    font-size: 0.85rem; align-self: flex-start;
+    white-space: nowrap;
 }
 .btn-premium {
     background: var(--gradient); color: var(--button-text); padding: 15px 40px;
@@ -130,15 +137,20 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; font-weight: 800; color:
 
 /* Controls */
 .carousel-controls {
-    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-    display: flex; gap: 20px; z-index: 20;
-    background: var(--control-bg); padding: 10px 20px; border-radius: 50px; border: 1px solid var(--border);
-    backdrop-filter: blur(5px);
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; justify-content: center;
+    gap: 15px; z-index: 20;
+    background: var(--control-bg); padding: 8px 22px; border-radius: 100px;
+    border: 1px solid var(--border);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    height: 48px;
 }
-.nav-btn { background: none; border: none; color: var(--text); cursor: pointer; }
-.carousel-dots { display: flex; gap: 10px; }
-.dot { width: 10px; height: 10px; background-color: var(--text-dim); border-radius: 50%; opacity: 0.5; }
-.dot.active { background-color: var(--accent); opacity: 1; transform: scale(1.3); }
+.nav-btn { background: none; border: none; color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; opacity: 0.7; padding: 0; width: 32px; height: 32px; }
+.nav-btn:hover { opacity: 1; color: var(--accent); }
+.carousel-dots { display: flex; gap: 10px; align-items: center; justify-content: center; height: 100%; }
+.dot { width: 7px; height: 7px; background-color: var(--text-dim); border-radius: 50%; opacity: 0.4; transition: 0.4s; }
+.dot.active { background-color: var(--accent); opacity: 1; transform: scale(1.6); }
 
 /* =========================================
    4. CARDS & SECTIONS
@@ -146,7 +158,39 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; font-weight: 800; color:
 .section { padding: 80px 0; }
 .secondary-bg { background-color: var(--bg-alt); }
 
-.flex-row { display: flex; flex-wrap: wrap; }
+.flex-row { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    justify-content: center;
+    align-items: stretch;
+}
+
+/* On Desktop: Don't let cards grow too wide, but center the grid itself */
+@media (min-width: 993px) {
+    .flex-row {
+        grid-template-columns: repeat(auto-fit, 320px);
+        justify-content: center;
+    }
+}
+
+.flex-row-scroll { 
+    display: flex; 
+    overflow-x: auto; 
+    flex-wrap: nowrap; 
+    padding: 20px 0 40px; 
+    gap: 30px; 
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+.flex-row-scroll > * {
+    flex: 0 0 32%; /* Matches roughly 3 per screen */
+    scroll-snap-align: start;
+    min-width: 300px;
+}
+.flex-row-scroll::-webkit-scrollbar { height: 8px; }
+.flex-row-scroll::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+.flex-row-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; }
 
 .glass-card, .pricing-card, .marketing-card-new, .blog-card, .project-card {
     background: var(--surface) !important;
@@ -154,11 +198,30 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; font-weight: 800; color:
     border-radius: 20px !important;
     backdrop-filter: blur(12px);
     display: flex; flex-direction: column;
-    height: 100%; 
-    transition: 0.3s ease; overflow: hidden;
+    width: 100%;
+    min-height: 280px; /* Drastically reduced for better UX */
+    height: 100%;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
 }
-.glass-card:hover { border-color: var(--accent) !important; transform: translateY(-8px); }
-.card-content { flex-grow: 1; padding: 30px !important; display: flex; flex-direction: column; }
+.project-card { min-height: 480px; }
+.blog-card { min-height: 400px; }
+.blog-card .card-image img {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.project-card .card-image img {
+    height: 240px;
+    width: 100%;
+    object-fit: cover;
+}
+.glass-card:hover { border-color: var(--accent) !important; transform: translateY(-10px); box-shadow: 0 20px 40px var(--elevation-shadow); }
+.card-content { flex-grow: 1; padding: 35px !important; display: flex; flex-direction: column; }
+.pricing-card .card-content, .marketing-card-new .card-content { align-items: center; text-align: center; }
 
 .pricing-card { position: relative; padding-top: 40px !important; text-align: center; }
 .pricing-card .badge-pill { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); margin: 0; }
@@ -180,7 +243,15 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; font-weight: 800; color:
 .tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 20px; margin-top: 40px; }
 .tech-icon-box { background: var(--surface); padding: 25px; border-radius: 16px; border: 1px solid var(--border); transition: 0.3s; text-align: center; }
 .tech-icon-box:hover { border-color: var(--accent); transform: translateY(-5px); }
-.tech-icon-box img { height: 50px; margin-bottom: 10px; display: block; margin: 0 auto 10px auto; }
+.tech-icon-box img { height: 50px; width: 50px; object-fit: contain; margin-bottom: 10px; display: block; margin: 0 auto 10px auto; }
+
+.marketing-card-new img {
+    height: 60px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    margin-bottom: 15px;
+}
 
 .form-wrap { padding: 40px; }
 .input-field input, .input-field textarea { color: var(--text) !important; border-bottom: 1px solid var(--border) !important; }
@@ -285,7 +356,7 @@ h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; font-weight: 800; color:
 }
 .blog-cover-img {
     width: 100%;
-    max-height: 520px;
+    height: 480px; /* Force uniform size for detail page too */
     display: block;
     object-fit: cover;
 }
