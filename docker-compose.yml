@@ -15,6 +15,8 @@ services:
     # 1. Load environment variables from your .env file
     env_file:
       - .env
+    volumes:
+      - media_data:/app/media
     # 2. command to migrate and run server automatically
     command: >
       sh -c "
@@ -48,6 +50,7 @@ services:
 # 4. Define the persistent volume here
 volumes:
   postgres_data:
+  media_data:
 
 networks:
   app_bridge:
